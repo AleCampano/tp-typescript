@@ -8,8 +8,6 @@ interface PostCardProps {
 function PostCard({ post, onSeleccionar }: PostCardProps) {
   return (
     <div className="postcard" onClick={() => onSeleccionar(post)}>
-
-      {/* Imagen con rotación de -3 grados */}
       <div className="postcardImagenContenedor">
         <img src={post.imageUrl} alt={post.descripcion} className="postcardImagen" />
       </div>

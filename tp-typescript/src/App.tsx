@@ -8,11 +8,13 @@ import Perfil from './components/Perfil';
 import { obtenerImagenes } from './api/api';
 import type { Post, Story } from './types';
 import { usuarioLogueado } from './data/usuario';
-import { comentariosSimulados, usernames, descripciones, fechas } from './data/comentarios';
+import { datosPosts, datosPostsPropios } from './data/comentarios';
+import './App.css';
 import './styles.css';
 
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [postsPropios, setPostsPropios] = useState<Post[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [cargando, setCargando] = useState(true);
   const [postSeleccionado, setPostSeleccionado] = useState<Post | null>(null);
@@ -23,26 +25,41 @@ function App() {
       try {
         setCargando(true);
 
-        const imagenes = await obtenerImagenes(20);
+        const [imagenes, imagenesPerfilRaw] = await Promise.all([
+          obtenerImagenes(20),
+          obtenerImagenes(6),
+        ]);
 
         const nuevasPosts: Post[] = imagenes.map((imagen, index) => ({
           id: imagen.id,
           imageUrl: imagen.url,
-          username: usernames[index % usernames.length],
+          username: datosPosts[index].username,
           userAvatar: `https://cataas.com/cat?width=40&height=40&i=${index}`,
-          likes: Math.floor(Math.random() * 9000) + 500,
-          descripcion: descripciones[index % descripciones.length],
-          comentarios: comentariosSimulados[index % comentariosSimulados.length],
-          fecha: fechas[index % fechas.length],
+          likes: datosPosts[index].likes,
+          descripcion: datosPosts[index].descripcion,
+          comentarios: datosPosts[index].comentarios,
+          fecha: datosPosts[index].fecha,
+        }));
+
+        const nuevosPostsPropios: Post[] = imagenesPerfilRaw.map((imagen, index) => ({
+          id: `propio-${imagen.id}`,
+          imageUrl: imagen.url,
+          username: usuarioLogueado.username,
+          userAvatar: usuarioLogueado.fotoPerfil,
+          likes: datosPostsPropios[index].likes,
+          descripcion: datosPostsPropios[index].descripcion,
+          comentarios: datosPostsPropios[index].comentarios,
+          fecha: datosPostsPropios[index].fecha,
         }));
 
         const nuevasStories: Story[] = imagenes.slice(0, 8).map((imagen, index) => ({
           id: `story-${imagen.id}`,
-          username: usernames[index % usernames.length],
-          avatar: imagen.url,
+          username: datosPosts[index].username,
+          avatar: `https://cataas.com/cat?width=80&height=80&i=${index}`,
         }));
 
         setPosts(nuevasPosts);
+        setPostsPropios(nuevosPostsPropios);
         setStories(nuevasStories);
       } catch (error) {
         console.error('Error al cargar imágenes:', error);
@@ -77,7 +94,7 @@ function App() {
         ) : (
           <Perfil
             usuario={usuarioLogueado}
-            posts={posts}
+            posts={postsPropios}
             onSeleccionarPost={setPostSeleccionado}
           />
         )}

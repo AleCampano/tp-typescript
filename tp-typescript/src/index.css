@@ -26,6 +26,18 @@ button {
 
 img {
   max-width: 100%;
+  height: auto;
+}
+
+.postcardImagen,
+.storiesAvatar,
+.sidebarAvatar,
+.perfilAvatar,
+.modalImagen,
+.postcardAvatar,
+.modalAvatar {
+  max-width: none;
+  height: 100%;
 }
 
 a {

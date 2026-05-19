@@ -5,9 +5,9 @@ import type { CatImage } from '../types';
 const URL = 'https://api.thecatapi.com/v1/images/search';
 
 // Pide imágenes de gatos a la API y las devuelve
-export async function obtenerImagenes(cantidad: number): Promise<CatImage[]> {
-  const respuesta = await axios.get<CatImage[]>(URL, {
-    params: { limit: cantidad },
-  });
-  return respuesta.data;
-}
+  export async function obtenerImagenes(cantidad: number): Promise<CatImage[]> {
+    const respuesta = await axios.get<CatImage[]>(URL, {
+      params: { limit: cantidad },
+    });
+    return respuesta.data;
+  }
